@@ -22,4 +22,5 @@ Route::apiResource('contatos',\App\Http\Controllers\Api\ContatoController::class
 
 Route::apiResource('contatos.produtos',\App\Http\Controllers\Api\ProdutoController::class)
     ->only(['index']);
+    
 Route::apiResource('produtos',\App\Http\Controllers\Api\ProdutoController::class);

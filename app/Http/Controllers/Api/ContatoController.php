@@ -10,14 +10,56 @@ class ContatoController extends Controller
 {
     private $contato;
 
+
+    public function AdicionaContato(Request $request)
+    {  
+        $dados = $request->all();
+        return   View('Contato',['dados'=>$dados]);
+    }
+
+    public function CriaContato(Request $request)
+    {
+       $contato = new  contato;
+       $contato = $contato->create($request->all());
+       return view('Contato');
+    }
+
+    public function Edit($id){
+        $contato = contato::findOrFail($id);
+        return view('Contato',['contato'=>$contato]);
+    }
+
+    public function Alterar($id,Request $request){
+        $contato = contato::findOrFail($id);
+        $contato->update($request->all());
+        $contatos = contato::all();
+        return view('home',['dados'=>$contatos]);
+    }
+
+
     public function __construct(Contato $contato)
     {
         $this->contato = $contato;
     }
 
-    public function index()
+    public function GetContato(Contato $Contato)
     {
-        return $this->contato->all();
+        $dados = $Contato->all();
+
+        return view('home',['dados'=>$dados]);
+    }
+
+  
+    public function Delete ($id){
+        $contato = contato::findOrFail($id);
+        $contato->delete();  
+        $contatos = contato::all();
+        return view('home',['dados'=>$contatos]); 
+    }
+
+    public function index(Contato $Contato)
+    {
+        return  $Contato->all();
     }
 
 

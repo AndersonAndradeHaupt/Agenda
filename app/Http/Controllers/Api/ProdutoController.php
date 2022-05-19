@@ -13,12 +13,26 @@ class ProdutoController extends Controller
 
     public function __construct(produto $produto)
     {
-        $this->produto = $produto;
+        $this->produto = $produto->all();
     }
-    public function index( contato $contato)
+
+
+    public function index( Produto $produto )
     {
-       return $contato->produtos;
-     /* return $this->produto->all();*/
+        return $produto->all();
+    }
+    public function GetProduto( Produto $produto )
+    {
+        $dados =  $produto->all();
+
+        return view('Produto',['dados'=>$dados]);
+    }
+
+
+    public function AdicionarProd(Request $request)
+    {  
+        $dados = $request->all();
+        return   View('AdicionarProd',['dados'=>$dados]);
     }
 
 
@@ -26,36 +40,53 @@ class ProdutoController extends Controller
     {
         return   $this->produto->create($request->all());
     }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Produto $produto)
+   
+    public function CriaProduto(Request $request)
     {
-        return $produto;
+       $produto = new  produto;
+       $produto = $produto->create($request->all());
+       return view('AdicionarProd');
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    public function GetProdContatoId( $id)
+    {
+      $dados = produto::where('contato_id' , $id)->get();
+      
+      return view('Produto',['dados'=>$dados]);
+    }
+
+
+    public function show(Produto $produto)
+    {
+       return $produto;
+    }
+
+    public function Edit($id){
+        $produto = produto::findOrFail($id);
+        return view('AdicionarProd',['produto'=>$produto]);
+    }
+
+    public function Alterar($id,Request $request){
+        $produto = produto::findOrFail($id);
+        $produto->update($request->all());
+        $produtos = produto::where('contato_id' , $request->contato_id)->get();
+        return view('Produto',['dados'=>$produtos]);
+    }
+
+    public function Delete ($id){
+        $produto = produto::findOrFail($id);
+        $contato_id = $produto->contato_id;
+        $produto->delete();  
+        $produtos = produto::where('contato_id' , $contato_id)->get();
+        return view('Produto',['dados'=>$produtos]); 
+    }
+
     public function update(Request $request, $id)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function destroy($id)
     {
         //
